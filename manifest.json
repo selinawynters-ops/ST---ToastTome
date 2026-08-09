@@ -1,0 +1,13 @@
+{
+    "display_name": "Toast Tome",
+    "loading_order": 999,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "DreamTavern",
+    "version": "1.0.2",
+    "description": "Default toastr replacement and searchable notification history for SillyTavern/DreamTavern.",
+    "homePage": "https://dreamtavern.me",
+    "auto_update": false
+}
