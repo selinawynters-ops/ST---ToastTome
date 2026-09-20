@@ -113,6 +113,7 @@ Works on any screen size:
 | 🔍 Search | Live text search across all toast history |
 | 🏷️ Filters | Severity pills — ALL / ERR / WARN / OK / INFO |
 | ⊘ Suppress | Block noisy toasts by pattern before they display (persists across reloads) |
+| ◇ Concealments Manager | Review every suppressed pattern, allow individual notices again, or restore all at once |
 | 📋 Copy | Copy individual toast text to clipboard with a fallback for older browsers |
 | 📄 Export | Download full toast log as timestamped `.txt` file |
 | 💾 Persistence | History survives reloads via `extension_settings` |
@@ -125,6 +126,18 @@ Works on any screen size:
 ---
 
 ## Recent Changes
+
+### 1.1.0 — 2026-09-20
+
+Added:
+- Added a **Concealments** view that matches Toast Tome's existing Grimoire-Heavy appearance.
+- Added an **Allow Again** action for each suppressed toast pattern.
+- Added **Restore All** for clearing the complete suppression list.
+- Added responsive desktop and mobile layouts for suppression management.
+- Pressing Escape now returns from Concealments before closing Toast Tome.
+
+Fixed:
+- Suppressions can now be reversed even after their original history entries expire or are erased.
 
 ### 2026-04-29 Session
 
@@ -174,6 +187,7 @@ All settings stored in `extension_settings.toastTome`:
 
 | Button | Action |
 |--------|--------|
+| **Concealments** | Open the suppression manager to allow individual notices again or restore all suppressed patterns |
 | **Transcribe** | Export full history as `toast-tome-YYYY-MM-DD.txt` |
 | **Erase** | Clear all history (cannot be undone) |
 | **Seal** | Close the popup |
@@ -211,6 +225,8 @@ See **[ARCHITECTURE.md](ARCHITECTURE.md)** for:
 - Color palette
 - Common troubleshooting
 - Extension guide
+
+See **[CHANGELOG.md](CHANGELOG.md)** for versioned release notes.
 
 ---
 
