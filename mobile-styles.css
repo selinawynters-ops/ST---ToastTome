@@ -182,43 +182,6 @@
         flex: 1;
         text-align: center;
     }
-    .tt-manager-titlebar {
-        padding: 12px 46px 12px 14px;
-    }
-    .tt-manager-ornament {
-        display: none;
-    }
-    .tt-manager-title {
-        font-size: 13px;
-        letter-spacing: 1.5px;
-    }
-    .tt-manager-subtitle {
-        font-size: 8px;
-    }
-    .tt-manager-body {
-        padding: 8px;
-    }
-    .tt-manager-entry {
-        align-items: stretch;
-        flex-direction: column;
-        gap: 9px;
-        padding: 11px 12px;
-    }
-    .tt-manager-entry .tt-marker {
-        width: 3px;
-    }
-    .tt-allow-again {
-        width: 100%;
-        min-height: 34px;
-    }
-    .tt-manager-footer {
-        align-items: stretch;
-        flex-direction: column;
-        padding: 10px 12px;
-    }
-    .tt-manager-count {
-        text-align: center;
-    }
 
     /* Badge slightly larger touch target on mobile */
     .tt-badge {
