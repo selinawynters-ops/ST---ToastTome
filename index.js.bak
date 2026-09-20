@@ -690,7 +690,11 @@ function interceptToastr() {
                 updateBadge();
 
                 if (panelOpen) {
-                    renderEntries();
+                    if (suppressionManagerOpen) {
+                        renderSuppressionManager();
+                    } else {
+                        renderEntries();
+                    }
                 }
             }
 

@@ -304,7 +304,7 @@ function createPanel() {
         <div class="tt-footer">
             <span class="tt-footer-info"></span>
             <div class="tt-footer-btns">
-                <button class="tt-btn tt-btn--ghost" data-action="concealments" title="Review suppressed toast patterns">Concealments</button>
+                <button class="tt-btn tt-btn--ghost" data-action="concealments" title="Review suppressed toast patterns">Conceal</button>
                 <button class="tt-btn tt-btn--ghost" data-action="export" title="Export toast history as text">Transcribe</button>
                 <button class="tt-btn tt-btn--danger" data-action="clear" title="Clear all toast history">Erase</button>
                 <button class="tt-btn tt-btn--primary" data-action="close" title="Close the Toast Tome">Seal</button>
@@ -424,7 +424,7 @@ function closeSuppressionManager() {
     panelEl.classList.remove('tt-panel--managing');
     suppressionManagerEl.setAttribute('aria-hidden', 'true');
     const button = panelEl.querySelector('[data-action="concealments"]');
-    if (button) button.textContent = 'Concealments';
+    if (button) button.textContent = 'Conceal';
     if (panelOpen) renderEntries();
 }
 
