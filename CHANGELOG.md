@@ -18,6 +18,6 @@ All notable changes to Toast Tome are documented here.
 - Suppressions can now be reversed after their original history entries have expired or been erased.
 - Users no longer need access to the original toast card to remove a persisted suppression.
 
-## [1.0.2]
+## [1.0.3]
 
 - Previous release before versioned release notes were introduced.
