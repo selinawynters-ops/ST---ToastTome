@@ -38,7 +38,7 @@ SillyTavern-ToastTome/
 | `js`           | `index.js`               | Single JS entry point |
 | `css`          | `style.css`              | Loads desktop + imports mobile-styles.css |
 | `author`       | DreamTavern              | |
-| `version`      | 1.1.0                    | |
+| `version`      | 1.0.3                    | |
 
 ---
 

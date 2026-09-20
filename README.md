@@ -127,7 +127,7 @@ Works on any screen size:
 
 ## Recent Changes
 
-### 1.1.0 — 2026-09-20
+### 1.0.3 — 2026-09-20
 
 Added:
 - Added a **Concealments** view that matches Toast Tome's existing Grimoire-Heavy appearance.

@@ -6,7 +6,7 @@
     "js": "index.js",
     "css": "style.css",
     "author": "DreamTavern",
-    "version": "1.1.0",
+    "version": "1.0.3",
     "description": "Default toastr replacement and searchable notification history for SillyTavern/DreamTavern.",
     "homePage": "https://dreamtavern.me",
     "auto_update": true
