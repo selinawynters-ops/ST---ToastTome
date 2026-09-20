@@ -19,7 +19,7 @@ When unread notifications are present, the lantern now:
 
 This also keeps the existing Conceal flow intact, including the ability to review concealed toastr entries and restore them when needed.
 
-Users can also turn the pulse animation on or off from the Toast Tome footer with the new `Pulse On` / `Pulse Off` pill. The choice persists in SillyTavern settings, so browser refreshes, reloads, and new sessions keep the user's preference.
+Users can also turn the pulse animation on or off from the Toast Tome footer with a small circular checkbox control. The choice persists in SillyTavern settings, so browser refreshes, reloads, and new sessions keep the user's preference.
 
 ## Animation Example
 
