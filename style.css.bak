@@ -1,0 +1,776 @@
+/*
+ * Toast Tome — DreamTavern Toast History Extension
+ * Grimoire-Heavy aesthetic with hologram precision
+ *
+ * Fonts used: Cinzel (titles), Space Mono (body/code), system fallbacks
+ * Colors: Deep purple base, warm amber/gold accents, severity-coded markers
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import url('./mobile-styles.css');
+
+/* ================================================================
+   1. BADGE — Big hoverable 🏮 with hanging notification pill
+   ================================================================ */
+
+.tt-badge {
+    position: relative;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: transparent;
+    align-self: center;
+    flex-shrink: 0;
+    z-index: 100;
+}
+.tt-badge--visible {
+    display: flex;
+}
+.tt-badge:hover {
+    background: rgba(201, 164, 74, 0.08);
+}
+.tt-badge--panel-open {
+    background: rgba(201, 164, 74, 0.12) !important;
+    border: 1px solid rgba(201, 164, 74, 0.2);
+}
+.tt-badge--floating {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    background: rgba(12, 8, 22, 0.92);
+    border: 1px solid rgba(201, 164, 74, 0.22);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    z-index: 10001;
+}
+
+.tt-badge-icon {
+    font-size: 24px;
+    filter: drop-shadow(0 0 6px rgba(201, 164, 74, 0.35));
+    transition: transform 0.2s ease;
+    line-height: 1;
+}
+.tt-badge:hover .tt-badge-icon {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 10px rgba(201, 164, 74, 0.5));
+}
+
+/* Hanging notification count */
+.tt-badge-count {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--SmartThemeBorderColor, #14112a);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.45);
+    line-height: 1;
+    z-index: 101;
+    animation: tt-badge-pop 0.3s ease;
+}
+.tt-badge-count--wide {
+    padding: 0 6px;
+    min-width: 24px;
+    right: -10px;
+}
+
+@keyframes tt-badge-pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ================================================================
+   2. POPUP — Compact Grimoire-Heavy history surface
+   ================================================================ */
+
+.tt-panel {
+    position: fixed;
+    top: 56px;
+    right: 12px;
+    width: 420px;
+    max-width: calc(100vw - 24px);
+    height: calc(100dvh - 64px);
+    max-height: calc(100dvh - 64px);
+    min-height: 200px;
+    min-width: 280px;
+    background: linear-gradient(180deg, #211b33 0%, #171327 100%);
+    border: 1px solid rgba(224, 196, 100, 0.32);
+    border-radius: 12px;
+    z-index: 10002;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-8px) scale(0.98);
+    transform-origin: top right;
+    transition: opacity 0.16s ease, visibility 0.16s ease, transform 0.16s ease;
+    box-shadow: 0 18px 56px rgba(0, 0, 0, 0.45), 0 0 30px rgba(224, 196, 100, 0.16);
+    overflow: hidden;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(224, 196, 100, 0.38) transparent;
+}
+.tt-panel::-webkit-scrollbar {
+    width: 6px;
+}
+.tt-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+.tt-panel::-webkit-scrollbar-thumb {
+    background: rgba(224, 196, 100, 0.38);
+    border-radius: 3px;
+}
+.tt-panel--open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+/* Top glow line */
+.tt-panel-glow-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 5%, rgba(224, 196, 100, 0.75) 30%, rgba(196, 181, 253, 0.5) 50%, rgba(224, 196, 100, 0.75) 70%, transparent 95%);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* ─── Titlebar ─────────────────────────────────────── */
+.tt-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(224, 196, 100, 0.2);
+    position: relative;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.tt-ornament {
+    color: rgba(224, 196, 100, 0.5);
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+.tt-title-icon {
+    font-size: 20px;
+    filter: drop-shadow(0 0 10px rgba(201, 164, 74, 0.5));
+}
+.tt-title-text {
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #f2d779;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px rgba(224, 196, 100, 0.34);
+    text-transform: uppercase;
+}
+.tt-title-badge {
+    position: absolute;
+    right: 48px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: #f2d779;
+    background: rgba(224, 196, 100, 0.16);
+    border: 1px solid rgba(224, 196, 100, 0.35);
+    padding: 2px 10px;
+    border-radius: 10px;
+}
+.tt-popup-close {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    border: 1px solid rgba(224, 196, 100, 0.28);
+    background: rgba(224, 196, 100, 0.12);
+    color: rgba(242, 215, 121, 0.9);
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.16s ease;
+}
+.tt-popup-close:hover {
+    background: rgba(224, 196, 100, 0.2);
+    border-color: rgba(224, 196, 100, 0.45);
+    color: #fff0a8;
+}
+
+/* ─── Toolbar (search + filter pills) ──────────────── */
+.tt-toolbar {
+    display: flex;
+    padding: 9px 16px;
+    gap: 8px;
+    border-bottom: 1px solid rgba(224, 196, 100, 0.16);
+    align-items: center;
+    flex-shrink: 0;
+}
+.tt-search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(224, 196, 100, 0.24);
+    border-radius: 4px;
+    padding: 6px 12px;
+    transition: border-color 0.2s;
+}
+.tt-search:focus-within {
+    border-color: rgba(224, 196, 100, 0.45);
+}
+.tt-search-icon {
+    font-size: 11px;
+    flex-shrink: 0;
+}
+.tt-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #f1edf8;
+    width: 100%;
+}
+.tt-search-input::placeholder {
+    color: #9f96bd;
+}
+.tt-filters {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+.tt-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    border: 1px solid rgba(196, 181, 253, 0.24);
+    color: #b9aed9;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    user-select: none;
+}
+.tt-pill:hover {
+    background: rgba(224, 196, 100, 0.12);
+    color: #f1edf8;
+}
+.tt-pill--active {
+    background: rgba(224, 196, 100, 0.18);
+    border-color: rgba(224, 196, 100, 0.42);
+    color: #f2d779;
+}
+
+/* ─── Body (scrollable entries) ────────────────────── */
+.tt-body {
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding: 8px 14px 44px;
+    scroll-padding-bottom: 96px;
+}
+
+/* ─── Toast Entry (card-based Grimoire style) ──────── */
+.tt-entry {
+    display: flex;
+    gap: 12px;
+    padding: 10px 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(196, 181, 253, 0.16);
+    align-items: flex-start;
+    transition: all 0.2s;
+}
+.tt-entry:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(196, 181, 253, 0.28);
+}
+.tt-entry--suppressed {
+    opacity: 0.4;
+    filter: saturate(0.5);
+}
+
+/* Side severity marker */
+.tt-marker {
+    width: 3px;
+    min-height: 36px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    align-self: stretch;
+}
+.tt-marker--tt-err { background: #f87171; box-shadow: 0 0 8px rgba(248, 113, 113, 0.3); }
+.tt-marker--tt-wrn { background: #fbbf24; box-shadow: 0 0 8px rgba(251, 191, 36, 0.3); }
+.tt-marker--tt-suc { background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, 0.3); }
+.tt-marker--tt-inf { background: #38bdf8; box-shadow: 0 0 8px rgba(56, 189, 248, 0.3); }
+
+/* Entry icon */
+.tt-entry-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    line-height: 1;
+}
+
+/* Entry content */
+.tt-entry-content {
+    flex: 1;
+    min-width: 0;
+}
+.tt-entry-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.tt-entry-title {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #f1edf8;
+    line-height: 1.3;
+}
+.tt-severity {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+}
+.tt-severity--tt-err { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+.tt-severity--tt-wrn { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+.tt-severity--tt-suc { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+.tt-severity--tt-inf { background: rgba(56, 189, 248, 0.12); color: #38bdf8; }
+
+.tt-entry-body {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #cfc6e8;
+    margin-top: 5px;
+    line-height: 1.5;
+    word-break: break-word;
+}
+.tt-search-hit {
+    background: rgba(201, 164, 74, 0.22);
+    color: #e0c464;
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+/* Entry metadata (time + actions) */
+.tt-entry-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.tt-entry-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(242, 215, 121, 0.62);
+    white-space: nowrap;
+}
+.tt-entry-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.tt-entry:hover .tt-entry-actions {
+    opacity: 1;
+}
+.tt-action {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    color: #b9aed9;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    transition: all 0.2s;
+    padding: 0;
+}
+.tt-action:hover {
+    background: rgba(196, 181, 253, 0.16);
+    border-color: rgba(196, 181, 253, 0.3);
+    color: #d8b4fe;
+}
+
+/* Empty state */
+.tt-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 60px 20px;
+    text-align: center;
+}
+.tt-empty-icon {
+    font-size: 40px;
+    opacity: 0.4;
+}
+.tt-empty-text {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: #9f96bd;
+    letter-spacing: 1px;
+}
+
+/* ─── Footer ───────────────────────────────────────── */
+.tt-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-top: 1px solid rgba(224, 196, 100, 0.16);
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    background: rgba(23, 19, 39, 0.98);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.tt-footer-info {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: #aaa0c8;
+    letter-spacing: 1px;
+}
+.tt-footer-btns {
+    display: flex;
+    gap: 8px;
+}
+.tt-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    border: none;
+    transition: all 0.2s;
+}
+.tt-btn--ghost {
+    background: rgba(196, 181, 253, 0.12);
+    color: #b9aed9;
+    border: 1px solid rgba(196, 181, 253, 0.26);
+}
+.tt-btn--ghost:hover {
+    background: rgba(196, 181, 253, 0.2);
+    color: #f1edf8;
+}
+.tt-btn--danger {
+    background: rgba(239, 68, 68, 0.14);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.tt-btn--danger:hover {
+    background: rgba(239, 68, 68, 0.24);
+    color: #fca5a5;
+}
+.tt-btn--primary {
+    background: rgba(224, 196, 100, 0.18);
+    color: #f2d779;
+    border: 1px solid rgba(224, 196, 100, 0.4);
+}
+.tt-btn--primary:hover {
+    background: rgba(224, 196, 100, 0.28);
+    color: #fff0a8;
+}
+
+/* ================================================================
+   3. RESTYLED DEFAULT TOASTR NOTIFICATIONS
+   DreamTavern Grimoire aesthetic for the actual toast popups
+   ================================================================ */
+
+/* Toast container positioning (force top-center) */
+#toast-container {
+    z-index: 10000 !important;
+}
+
+#toast-container.toast-top-center {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    top: calc(var(--topBarBlockSize) + env(safe-area-inset-top, 0px) + 4px) !important;
+    margin-top: 0 !important;
+    width: min(96vw, 640px) !important;
+    max-width: min(96vw, 640px) !important;
+    max-height: calc(100dvh - var(--topBarBlockSize) - env(safe-area-inset-top, 0px) - 8px);
+    overflow-y: auto;
+    pointer-events: none;
+}
+
+/* Base toast override */
+#toast-container.toast-top-center > .toast {
+    background-color: rgba(30, 25, 45, 0.97) !important;
+    border: 1px solid rgba(196, 181, 253, 0.28) !important;
+    border-radius: 8px !important;
+    box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.42),
+        0 0 18px rgba(196, 181, 253, 0.1) !important;
+    padding: 14px 16px 14px 52px !important;
+    opacity: 1 !important;
+    font-family: 'Space Mono', monospace !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 8px 0 !important;
+    pointer-events: auto;
+}
+
+/* Top glow accent on each toast */
+#toast-container.toast-top-center > .toast::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 1;
+}
+
+/* Left severity bar */
+#toast-container.toast-top-center > .toast::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+}
+
+/* Toast title */
+#toast-container.toast-top-center > .toast .toast-title {
+    font-family: 'Cinzel', serif !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 4px !important;
+}
+
+/* Toast message body */
+#toast-container.toast-top-center > .toast .toast-message {
+    font-family: 'Space Mono', monospace !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+    opacity: 0.95;
+}
+
+/* Close button */
+#toast-container.toast-top-center > .toast .toast-close-button {
+    color: rgba(242, 215, 121, 0.72) !important;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    text-shadow: none !important;
+    top: 4px;
+    right: 6px;
+}
+#toast-container.toast-top-center > .toast .toast-close-button:hover {
+    color: #fff0a8 !important;
+}
+
+/* ─── Severity-specific styles ─────────────────────── */
+
+/* Error */
+#toast-container.toast-top-center > .toast-error {
+    border-color: rgba(248, 113, 113, 0.2) !important;
+    color: #fca5a5 !important;
+}
+#toast-container.toast-top-center > .toast-error::before {
+    background: linear-gradient(90deg, transparent, rgba(248, 113, 113, 0.3), transparent);
+}
+#toast-container.toast-top-center > .toast-error::after {
+    background: #f87171;
+    box-shadow: 0 0 8px rgba(248, 113, 113, 0.3);
+}
+#toast-container.toast-top-center > .toast-error .toast-title {
+    color: #fca5a5 !important;
+}
+#toast-container.toast-top-center > .toast-error .toast-message {
+    color: rgba(252, 165, 165, 0.92) !important;
+}
+#toast-container.toast-top-center > .toast-error {
+    background-image: none !important;
+}
+#toast-container.toast-top-center > .toast-error::marker { display: none; }
+
+/* Warning */
+#toast-container.toast-top-center > .toast-warning {
+    border-color: rgba(251, 191, 36, 0.2) !important;
+    color: #fde68a !important;
+}
+#toast-container.toast-top-center > .toast-warning::before {
+    background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.3), transparent);
+}
+#toast-container.toast-top-center > .toast-warning::after {
+    background: #fbbf24;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+}
+#toast-container.toast-top-center > .toast-warning .toast-title {
+    color: #fde68a !important;
+}
+#toast-container.toast-top-center > .toast-warning .toast-message {
+    color: rgba(253, 230, 138, 0.92) !important;
+}
+#toast-container.toast-top-center > .toast-warning {
+    background-image: none !important;
+}
+
+/* Success */
+#toast-container.toast-top-center > .toast-success {
+    border-color: rgba(74, 222, 128, 0.2) !important;
+    color: #86efac !important;
+}
+#toast-container.toast-top-center > .toast-success::before {
+    background: linear-gradient(90deg, transparent, rgba(74, 222, 128, 0.3), transparent);
+}
+#toast-container.toast-top-center > .toast-success::after {
+    background: #4ade80;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.3);
+}
+#toast-container.toast-top-center > .toast-success .toast-title {
+    color: #86efac !important;
+}
+#toast-container.toast-top-center > .toast-success .toast-message {
+    color: rgba(134, 239, 172, 0.92) !important;
+}
+#toast-container.toast-top-center > .toast-success {
+    background-image: none !important;
+}
+
+/* Info */
+#toast-container.toast-top-center > .toast-info {
+    border-color: rgba(56, 189, 248, 0.2) !important;
+    color: #7dd3fc !important;
+}
+#toast-container.toast-top-center > .toast-info::before {
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
+}
+#toast-container.toast-top-center > .toast-info::after {
+    background: #38bdf8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+}
+#toast-container.toast-top-center > .toast-info .toast-title {
+    color: #7dd3fc !important;
+}
+#toast-container.toast-top-center > .toast-info .toast-message {
+    color: rgba(125, 211, 252, 0.92) !important;
+}
+#toast-container.toast-top-center > .toast-info {
+    background-image: none !important;
+}
+
+/* Replace default toastr background icons with emoji-style via padding adjustment */
+#toast-container.toast-top-center > .toast {
+    background-size: 20px !important;
+    background-position: 16px center !important;
+}
+
+/* Toast progress bar */
+#toast-container.toast-top-center > .toast .toast-progress {
+    background: rgba(224, 196, 100, 0.45) !important;
+    height: 2px !important;
+    bottom: 0;
+    border-radius: 0 0 8px 8px;
+}
+#toast-container.toast-top-center > .toast-error .toast-progress {
+    background: rgba(248, 113, 113, 0.3) !important;
+}
+#toast-container.toast-top-center > .toast-warning .toast-progress {
+    background: rgba(251, 191, 36, 0.3) !important;
+}
+#toast-container.toast-top-center > .toast-success .toast-progress {
+    background: rgba(74, 222, 128, 0.3) !important;
+}
+#toast-container.toast-top-center > .toast-info .toast-progress {
+    background: rgba(56, 189, 248, 0.3) !important;
+}
+
+/* Hover state */
+#toast-container.toast-top-center > .toast:hover {
+    box-shadow:
+        0 0 40px rgba(0, 0, 0, 0.5),
+        0 0 24px rgba(196, 181, 253, 0.16) !important;
+    opacity: 1 !important;
+}
+
+/* ─── Resize Handle ─────────────────────────────────────────── */
+.tt-resize-handle {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    cursor: ns-resize;
+    border-radius: 0 0 12px 12px;
+    background: transparent;
+    transition: background 0.2s;
+    z-index: 10;
+    flex-shrink: 0;
+}
+.tt-resize-handle::after {
+    content: '';
+    display: block;
+    margin: 3px auto 0;
+    width: 36px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(224, 196, 100, 0.25);
+    transition: background 0.2s;
+}
+.tt-resize-handle:hover::after,
+.tt-resize-handle.tt-resizing::after {
+    background: rgba(224, 196, 100, 0.65);
+}
+
+/* ================================================================
+   4. MOBILE RESPONSIVENESS
+   See mobile-styles.css for full responsive styles
+   ================================================================ */
