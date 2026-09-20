@@ -6,7 +6,7 @@
     "js": "index.js",
     "css": "style.css",
     "author": "DreamTavern",
-    "version": "1.0.3",
+    "version": "1.0.2",
     "description": "Default toastr replacement and searchable notification history for SillyTavern/DreamTavern.",
     "homePage": "https://github.com/selinawynters-ops/ST---ToastTome/tree/main",
     "auto_update": true

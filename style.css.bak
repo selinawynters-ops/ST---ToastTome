@@ -49,7 +49,7 @@
 }
 
 .tt-badge-icon {
-    font-size: 24px;
+    font-size: calc(var(--mainFontSize) * 1.6);
     filter: drop-shadow(0 0 6px rgba(201, 164, 74, 0.35));
     transition: transform 0.2s ease;
     line-height: 1;
@@ -65,7 +65,7 @@
     top: -4px;
     right: -6px;
     font-family: 'Space Mono', monospace;
-    font-size: 10px;
+    font-size: calc(var(--mainFontSize) * 0.667);
     font-weight: 700;
     min-width: 18px;
     height: 18px;
@@ -170,16 +170,16 @@
 .tt-ornament {
     color: rgba(224, 196, 100, 0.5);
     font-family: 'Cinzel', serif;
-    font-size: 10px;
+    font-size: calc(var(--mainFontSize) * 0.667);
     letter-spacing: 2px;
 }
 .tt-title-icon {
-    font-size: 20px;
+    font-size: calc(var(--mainFontSize) * 1.333);
     filter: drop-shadow(0 0 10px rgba(201, 164, 74, 0.5));
 }
 .tt-title-text {
     font-family: 'Cinzel', serif;
-    font-size: 15px;
+    font-size: calc(var(--mainFontSize) * 1);
     font-weight: 700;
     color: #f2d779;
     letter-spacing: 2px;
@@ -190,7 +190,7 @@
     position: absolute;
     right: 48px;
     font-family: 'Space Mono', monospace;
-    font-size: 10px;
+    font-size: calc(var(--mainFontSize) * 0.667);
     font-weight: 700;
     color: #f2d779;
     background: rgba(224, 196, 100, 0.16);
@@ -210,7 +210,7 @@
     background: rgba(224, 196, 100, 0.12);
     color: rgba(242, 215, 121, 0.9);
     font-family: 'Space Mono', monospace;
-    font-size: 16px;
+    font-size: calc(var(--mainFontSize) * 1.067);
     line-height: 1;
     cursor: pointer;
     transition: all 0.16s ease;
@@ -245,7 +245,7 @@
     border-color: rgba(224, 196, 100, 0.45);
 }
 .tt-search-icon {
-    font-size: 11px;
+    font-size: calc(var(--mainFontSize) * 0.733);
     flex-shrink: 0;
 }
 .tt-search-input {
@@ -254,7 +254,7 @@
     border: none;
     outline: none;
     font-family: 'Space Mono', monospace;
-    font-size: 11px;
+    font-size: calc(var(--mainFontSize) * 0.733);
     color: #f1edf8;
     width: 100%;
 }
@@ -268,7 +268,7 @@
 }
 .tt-pill {
     font-family: 'Space Mono', monospace;
-    font-size: 9px;
+    font-size: calc(var(--mainFontSize) * 0.6);
     padding: 4px 10px;
     border-radius: 3px;
     border: 1px solid rgba(196, 181, 253, 0.24);
@@ -337,7 +337,7 @@
 
 /* Entry icon */
 .tt-entry-icon {
-    font-size: 18px;
+    font-size: calc(var(--mainFontSize) * 1.2);
     flex-shrink: 0;
     margin-top: 2px;
     line-height: 1;
@@ -356,14 +356,14 @@
 }
 .tt-entry-title {
     font-family: 'Cinzel', serif;
-    font-size: 12px;
+    font-size: calc(var(--mainFontSize) * 0.8);
     font-weight: 600;
     color: #f1edf8;
     line-height: 1.3;
 }
 .tt-severity {
     font-family: 'Space Mono', monospace;
-    font-size: 8px;
+    font-size: calc(var(--mainFontSize) * 0.533);
     font-weight: 700;
     padding: 1px 6px;
     border-radius: 3px;
@@ -377,7 +377,7 @@
 
 .tt-entry-body {
     font-family: 'Space Mono', monospace;
-    font-size: 10px;
+    font-size: calc(var(--mainFontSize) * 0.667);
     color: #cfc6e8;
     margin-top: 5px;
     line-height: 1.5;
@@ -400,7 +400,7 @@
 }
 .tt-entry-time {
     font-family: 'Space Mono', monospace;
-    font-size: 9px;
+    font-size: calc(var(--mainFontSize) * 0.6);
     color: rgba(242, 215, 121, 0.62);
     white-space: nowrap;
 }
@@ -421,7 +421,7 @@
     justify-content: center;
     border-radius: 4px;
     color: #b9aed9;
-    font-size: 12px;
+    font-size: calc(var(--mainFontSize) * 0.8);
     cursor: pointer;
     border: 1px solid transparent;
     background: transparent;
@@ -445,12 +445,12 @@
     text-align: center;
 }
 .tt-empty-icon {
-    font-size: 40px;
+    font-size: calc(var(--mainFontSize) * 2.667);
     opacity: 0.4;
 }
 .tt-empty-text {
     font-family: 'Cinzel', serif;
-    font-size: 12px;
+    font-size: calc(var(--mainFontSize) * 0.8);
     color: #9f96bd;
     letter-spacing: 1px;
 }
@@ -472,7 +472,7 @@
 }
 .tt-footer-info {
     font-family: 'Cinzel', serif;
-    font-size: 10px;
+    font-size: calc(var(--mainFontSize) * 0.667);
     color: #aaa0c8;
     letter-spacing: 1px;
 }
@@ -482,7 +482,7 @@
 }
 .tt-btn {
     font-family: 'Cinzel', serif;
-    font-size: 10px;
+    font-size: calc(var(--mainFontSize) * 0.667);
     font-weight: 600;
     padding: 6px 12px;
     border-radius: 4px;
@@ -590,7 +590,7 @@
 #toast-container.toast-top-center > .toast .toast-title {
     font-family: 'Cinzel', serif !important;
     font-weight: 600 !important;
-    font-size: 12px !important;
+    font-size: calc(var(--mainFontSize) * 0.8) !important;
     letter-spacing: 0.5px !important;
     margin-bottom: 4px !important;
 }
@@ -598,7 +598,7 @@
 /* Toast message body */
 #toast-container.toast-top-center > .toast .toast-message {
     font-family: 'Space Mono', monospace !important;
-    font-size: 11px !important;
+    font-size: calc(var(--mainFontSize) * 0.733) !important;
     line-height: 1.5 !important;
     opacity: 0.95;
 }
@@ -607,7 +607,7 @@
 #toast-container.toast-top-center > .toast .toast-close-button {
     color: rgba(242, 215, 121, 0.72) !important;
     font-weight: 400 !important;
-    font-size: 16px !important;
+    font-size: calc(var(--mainFontSize) * 1.067) !important;
     text-shadow: none !important;
     top: 4px;
     right: 6px;

@@ -182,25 +182,6 @@
         flex: 1;
         text-align: center;
     }
-    .tt-suppression-manager-header {
-        padding: 12px 16px;
-    }
-    .tt-suppression-manager-body {
-        padding: 8px 16px 52px;
-    }
-    .tt-suppression-item {
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 9px;
-        padding: 10px;
-    }
-    .tt-suppression-copy {
-        width: calc(100% - 30px);
-    }
-    .tt-allow-again {
-        flex: 1 1 100%;
-        margin-left: 28px;
-    }
 
     /* Badge slightly larger touch target on mobile */
     .tt-badge {
@@ -292,18 +273,6 @@
     }
     .tt-footer {
         padding: 8px 12px;
-    }
-    .tt-suppression-manager-header {
-        align-items: stretch;
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px 12px;
-    }
-    .tt-suppression-manager-body {
-        padding: 6px 12px 56px;
-    }
-    .tt-suppression-manager-header .tt-btn {
-        width: 100%;
     }
 }
 

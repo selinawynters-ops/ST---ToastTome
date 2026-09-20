@@ -491,6 +491,11 @@
     border: none;
     transition: all 0.2s;
 }
+.tt-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+    filter: grayscale(0.35);
+}
 .tt-btn--ghost {
     background: rgba(196, 181, 253, 0.12);
     color: #b9aed9;
@@ -517,6 +522,90 @@
 .tt-btn--primary:hover {
     background: rgba(224, 196, 100, 0.28);
     color: #fff0a8;
+}
+
+/* ─── Concealments manager ─────────────────────────── */
+.tt-suppression-manager {
+    display: none;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    flex-direction: column;
+    background:
+        radial-gradient(circle at top right, rgba(196, 181, 253, 0.09), transparent 38%),
+        rgba(20, 16, 34, 0.72);
+}
+.tt-panel--managing .tt-toolbar,
+.tt-panel--managing .tt-body {
+    display: none;
+}
+.tt-panel--managing .tt-suppression-manager {
+    display: flex;
+}
+.tt-suppression-manager-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(224, 196, 100, 0.16);
+}
+.tt-suppression-manager-kicker {
+    color: rgba(242, 215, 121, 0.7);
+    font-family: 'Space Mono', monospace;
+    font-size: calc(var(--mainFontSize) * 0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.tt-suppression-manager-title {
+    margin-top: 3px;
+    color: #f1edf8;
+    font-family: 'Cinzel', serif;
+    font-size: calc(var(--mainFontSize) * 0.933);
+    letter-spacing: 1px;
+}
+.tt-suppression-manager-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 10px 14px;
+}
+.tt-suppression-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 0;
+    padding: 12px;
+    border: 1px solid rgba(167, 139, 250, 0.14);
+    border-left: 3px solid rgba(224, 196, 100, 0.55);
+    border-radius: 7px;
+    background: rgba(46, 38, 69, 0.62);
+}
+.tt-suppression-copy {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+}
+.tt-suppression-text {
+    color: #d6cfea;
+    font-family: 'Space Mono', monospace;
+    font-size: calc(var(--mainFontSize) * 0.667);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+.tt-allow-again {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+.tt-suppression-empty-detail {
+    max-width: 330px;
+    color: #817796;
+    font-family: 'Space Mono', monospace;
+    font-size: calc(var(--mainFontSize) * 0.6);
+    line-height: 1.55;
 }
 
 /* ================================================================
