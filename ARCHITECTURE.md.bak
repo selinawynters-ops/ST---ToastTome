@@ -10,11 +10,11 @@
 ```
 SillyTavern-ToastTome/
 ├── manifest.json          # Extension metadata (name, version, entry points)
-├── index.js               # Main extension logic and panel views
+├── index.js               # Main extension logic (~450 lines)
 ├── style.css              # Desktop styling (popup, badge, toastr override)
 ├── mobile-styles.css      # Responsive breakpoints (768/600/480px + touch)
 ├── src/
-│   └── Settings.js        # Persistent settings class
+│   └── Settings.js        # Persistent settings class (~96 lines)
 ├── images/                # README preview screenshots
 │   ├── 01-hero-overview.png
 │   ├── 02-badge-closeup.png
@@ -23,7 +23,6 @@ SillyTavern-ToastTome/
 │   ├── 05-search-filter.png
 │   └── 06-mobile-view.png
 ├── README.md              # User-facing docs with image previews
-├── CHANGELOG.md           # Versioned release notes
 └── ARCHITECTURE.md        # This file — developer reference
 ```
 
@@ -38,7 +37,7 @@ SillyTavern-ToastTome/
 | `js`           | `index.js`               | Single JS entry point |
 | `css`          | `style.css`              | Loads desktop + imports mobile-styles.css |
 | `author`       | DreamTavern              | |
-| `version`      | 1.0.3                    | |
+| `version`      | 1.0.1                    | |
 
 ---
 
@@ -87,15 +86,12 @@ import { Settings } from './src/Settings.js';                    // Our settings
   ├── .tt-panel-glow-top        (decorative top gradient line)
   ├── .tt-titlebar               (🏮 Toast Tome title + count badge)
   ├── .tt-toolbar                (search input + severity filter pills)
-  ├── .tt-suppression-manager    (suppression recovery view)
   ├── .tt-body                   (scrollable entry list)
-  └── .tt-footer                 (counts + Concealments/Transcribe/Erase/Seal)
+  └── .tt-footer                 (inscription count + Transcribe/Erase/Seal)
   ```
 - **Event listeners**:
   - Search input → `renderEntries()` on every keystroke
   - Filter pills → sets `activeFilter`, re-renders
-  - Concealments → opens or closes the suppression recovery view
-  - Allow Again / Restore All → removes one or all stored block patterns
   - Transcribe → `exportHistory()`
   - Erase → `settings.clearHistory()`, resets counters
   - Seal → `closePanel()`
@@ -105,12 +101,7 @@ import { Settings } from './src/Settings.js';                    // Our settings
 - **What**: Show/hide the popup with CSS transition
 - **CSS**: `.tt-panel--open` reveals the compact floating popup
 - **Outside click**: `handleOutsideClick()` listener added on open, removed on close
-- **Keyboard**: ESC returns from the Concealments manager before closing the popup
-
-#### `openSuppressionManager()` / `closeSuppressionManager()` / `renderSuppressionManager()`
-- **What**: Switches the existing panel between toast history and suppression recovery.
-- **Behavior**: Lists `settings.hideList`, restores individual patterns, clears all patterns, and renders an empty state.
-- **CSS**: `.tt-panel--managing` swaps `.tt-body`/`.tt-toolbar` for `.tt-suppression-manager`.
+- **Keyboard**: ESC key closes popup (listener in `init()`)
 
 #### `renderEntries()`
 - **What**: Renders all toast history entries into the popup body
@@ -202,7 +193,6 @@ All data stored under `extension_settings.toastTome` (accessed via ST's `saveSet
 | `isBlocked(level, textContent)` | Returns true if the toast matches a block list entry |
 | `addBlock(level, textContent)` | Adds a pattern to the block list |
 | `removeBlock(level, textContent)` | Removes a pattern from the block list |
-| `clearBlocks()` | Removes every pattern from the block list and saves |
 | `addToHistory(level, title, body)` | Appends a new entry with ISO timestamp, then saves |
 | `clearHistory()` | Empties history array and saves |
 
@@ -215,7 +205,7 @@ All data stored under `extension_settings.toastTome` (accessed via ST's `saveSet
 | Section | Lines | CSS Prefix | What it styles |
 |---------|-------|------------|----------------|
 | 1. Badge | ~80 | `.tt-badge*` | The 🏮 icon in the top bar + hanging notification count |
-| 2. Popup | ~400 | `.tt-panel*`, `.tt-titlebar*`, `.tt-toolbar*`, `.tt-body*`, `.tt-entry*`, `.tt-suppression*`, `.tt-footer*` | History popup and concealments manager |
+| 2. Popup | ~300 | `.tt-panel*`, `.tt-titlebar*`, `.tt-toolbar*`, `.tt-body*`, `.tt-entry*`, `.tt-footer*` | Compact history popup |
 | 3. Toastr Override | ~200 | `#toast-container > .toast*` | Restyled default SillyTavern notifications |
 | 4. Import | top of file | `@import` | Loads `mobile-styles.css` before regular CSS rules |
 
@@ -241,8 +231,6 @@ All data stored under `extension_settings.toastTome` (accessed via ST's `saveSet
 | `.tt-search` / `.tt-search-input` | Search bar |
 | `.tt-pill` / `.tt-pill--active` | Severity filter buttons |
 | `.tt-body` | Scrollable entry container |
-| `.tt-suppression-manager` | Suppression recovery view inside the panel |
-| `.tt-suppression-item` | Stored suppressed pattern with an Allow Again control |
 | `.tt-entry` | Individual toast card |
 | `.tt-entry--suppressed` | Dimmed suppressed entry |
 | `.tt-marker` | Left-side severity color bar |

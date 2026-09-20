@@ -124,12 +124,6 @@ export class Settings {
         }
     }
 
-    clearBlocks() {
-        if (this.hideList.length === 0) return;
-        this.hideList = [];
-        this.save();
-    }
-
     addToHistory(level, title, body) {
         this.history.push({
             level,

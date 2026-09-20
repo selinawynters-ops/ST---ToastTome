@@ -113,7 +113,6 @@ Works on any screen size:
 | 🔍 Search | Live text search across all toast history |
 | 🏷️ Filters | Severity pills — ALL / ERR / WARN / OK / INFO |
 | ⊘ Suppress | Block noisy toasts by pattern before they display (persists across reloads) |
-| ◇ Concealments Manager | Review every suppressed pattern, allow individual notices again, or restore all at once |
 | 📋 Copy | Copy individual toast text to clipboard with a fallback for older browsers |
 | 📄 Export | Download full toast log as timestamped `.txt` file |
 | 💾 Persistence | History survives reloads via `extension_settings` |
@@ -126,18 +125,6 @@ Works on any screen size:
 ---
 
 ## Recent Changes
-
-### 1.0.3 — 2026-09-20
-
-Added:
-- Added a Grimoire-styled **Concealments** manager inside the Toast Tome panel.
-- Added **Allow Again** controls for restoring individual suppressed notices.
-- Added **Restore All** for clearing every suppression at once.
-- Added responsive desktop and mobile layouts for suppression recovery.
-- Escape now returns to inscriptions before closing the panel.
-
-Fixed:
-- Suppressions can now be reversed even after the original history entry expires or is erased.
 
 ### 2026-04-29 Session
 
@@ -187,7 +174,6 @@ All settings stored in `extension_settings.toastTome`:
 
 | Button | Action |
 |--------|--------|
-| **Concealments** | Review suppressed patterns and allow them again individually or all at once |
 | **Transcribe** | Export full history as `toast-tome-YYYY-MM-DD.txt` |
 | **Erase** | Clear all history (cannot be undone) |
 | **Seal** | Close the popup |
@@ -198,7 +184,7 @@ All settings stored in `extension_settings.toastTome`:
 
 | Key | Action |
 |-----|--------|
-| `ESC` | Return from Concealments, then close the popup |
+| `ESC` | Close the popup |
 | Click outside popup | Close the popup |
 
 ---
@@ -225,8 +211,6 @@ See **[ARCHITECTURE.md](ARCHITECTURE.md)** for:
 - Color palette
 - Common troubleshooting
 - Extension guide
-
-See **[CHANGELOG.md](CHANGELOG.md)** for versioned release notes.
 
 ---
 
