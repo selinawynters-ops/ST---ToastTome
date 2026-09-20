@@ -2,6 +2,18 @@
 
 All notable changes to Toast Tome are documented here.
 
+## [1.0.4] - 2026-09-20
+
+### Added
+
+- A slow unread lantern pulse animation for the Toast Tome badge.
+- A persisted **Pulse On** / **Pulse Off** footer pill so users can disable the animation when it conflicts with a SillyTavern fork.
+- Mobile sizing rules for the new pulse control.
+
+### Changed
+
+- The unread badge animation now only runs when unread notifications exist and pulse animation is enabled.
+
 ## [1.0.3] - 2026-09-20
 
 ### Added
