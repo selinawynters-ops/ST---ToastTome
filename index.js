@@ -53,6 +53,8 @@ let badgeCountEl = null;
 let panelEl = null;
 let panelBodyEl = null;
 let panelFooterInfo = null;
+let suppressionManagerEl = null;
+let suppressionManagerBodyEl = null;
 
 // ─── Helpers ─────────────────────────────────────────────────
 function escapeHtml(str) {
@@ -291,16 +293,37 @@ function createPanel() {
         <div class="tt-footer">
             <span class="tt-footer-info"></span>
             <div class="tt-footer-btns">
+                <button class="tt-btn tt-btn--ghost" data-action="suppressions" title="Manage concealed toast patterns">Concealments</button>
                 <button class="tt-btn tt-btn--ghost" data-action="export" title="Export toast history as text">Transcribe</button>
                 <button class="tt-btn tt-btn--danger" data-action="clear" title="Clear all toast history">Erase</button>
                 <button class="tt-btn tt-btn--primary" data-action="close" title="Close the Toast Tome">Seal</button>
             </div>
         </div>
+        <section class="tt-suppression-manager" hidden aria-label="Concealed toast manager">
+            <div class="tt-manager-titlebar">
+                <span class="tt-manager-ornament">◆──</span>
+                <div>
+                    <div class="tt-manager-title">Concealments</div>
+                    <div class="tt-manager-subtitle">Choose which silenced notices may speak again.</div>
+                </div>
+                <button class="tt-popup-close tt-manager-close" type="button" title="Return to the Toast Tome" aria-label="Close concealments manager">×</button>
+            </div>
+            <div class="tt-manager-body"></div>
+            <div class="tt-manager-footer">
+                <span class="tt-manager-count"></span>
+                <div class="tt-footer-btns">
+                    <button class="tt-btn tt-btn--danger" data-action="restore-all" title="Allow every concealed toast again">Restore All</button>
+                    <button class="tt-btn tt-btn--primary" data-action="manager-close">Return</button>
+                </div>
+            </div>
+        </section>
         <div class="tt-resize-handle" title="Drag to resize"></div>
     `;
 
     panelBodyEl = panelEl.querySelector('.tt-body');
     panelFooterInfo = panelEl.querySelector('.tt-footer-info');
+    suppressionManagerEl = panelEl.querySelector('.tt-suppression-manager');
+    suppressionManagerBodyEl = panelEl.querySelector('.tt-manager-body');
 
     // Search
     const searchInput = panelEl.querySelector('.tt-search-input');
@@ -321,6 +344,7 @@ function createPanel() {
 
     // Footer buttons
     panelEl.querySelector('.tt-popup-close').addEventListener('click', closePanel);
+    panelEl.querySelector('[data-action="suppressions"]').addEventListener('click', openSuppressionManager);
     panelEl.querySelector('[data-action="export"]').addEventListener('click', exportHistory);
     panelEl.querySelector('[data-action="clear"]').addEventListener('click', () => {
         settings.clearHistory();
@@ -331,6 +355,13 @@ function createPanel() {
         renderEntries();
     });
     panelEl.querySelector('[data-action="close"]').addEventListener('click', closePanel);
+    panelEl.querySelector('.tt-manager-close').addEventListener('click', closeSuppressionManager);
+    panelEl.querySelector('[data-action="manager-close"]').addEventListener('click', closeSuppressionManager);
+    panelEl.querySelector('[data-action="restore-all"]').addEventListener('click', () => {
+        settings.clearBlocks();
+        renderSuppressionManager();
+        renderEntries();
+    });
 
     // Prevent clicks inside panel from closing it
     panelEl.addEventListener('click', (e) => e.stopPropagation());
@@ -367,10 +398,62 @@ function openPanel() {
 function closePanel() {
     if (!panelEl || !badgeEl) return;
 
+    closeSuppressionManager();
     panelOpen = false;
     panelEl.classList.remove('tt-panel--open');
     badgeEl.classList.remove('tt-badge--panel-open');
     document.removeEventListener('click', handleOutsideClick);
+}
+
+function openSuppressionManager() {
+    if (!suppressionManagerEl) return;
+    renderSuppressionManager();
+    suppressionManagerEl.hidden = false;
+}
+
+function closeSuppressionManager() {
+    if (!suppressionManagerEl) return;
+    suppressionManagerEl.hidden = true;
+}
+
+function renderSuppressionManager() {
+    if (!suppressionManagerEl || !suppressionManagerBodyEl) return;
+
+    const blocks = [...settings.hideList];
+    const countEl = suppressionManagerEl.querySelector('.tt-manager-count');
+    const restoreAllButton = suppressionManagerEl.querySelector('[data-action="restore-all"]');
+    countEl.textContent = `${blocks.length} concealment${blocks.length === 1 ? '' : 's'}`;
+    restoreAllButton.disabled = blocks.length === 0;
+    suppressionManagerBodyEl.innerHTML = '';
+
+    if (blocks.length === 0) {
+        const empty = document.createElement('div');
+        empty.classList.add('tt-empty', 'tt-manager-empty');
+        empty.innerHTML = '<span class="tt-empty-icon">◇</span><span class="tt-empty-text">No notices are concealed</span>';
+        suppressionManagerBodyEl.appendChild(empty);
+        return;
+    }
+
+    for (const block of blocks) {
+        const meta = LEVEL_META[block.level] || LEVEL_META.info;
+        const item = document.createElement('div');
+        item.classList.add('tt-manager-entry');
+        item.innerHTML = `
+            <div class="tt-marker tt-marker--${meta.class}"></div>
+            <div class="tt-manager-entry-content">
+                <span class="tt-severity tt-severity--${meta.class}">${meta.label}</span>
+                <span class="tt-manager-entry-text"></span>
+            </div>
+            <button class="tt-btn tt-btn--ghost tt-allow-again" type="button">Allow Again</button>
+        `;
+        item.querySelector('.tt-manager-entry-text').textContent = block.textContent;
+        item.querySelector('.tt-allow-again').addEventListener('click', () => {
+            settings.removeBlock(block.level, block.textContent);
+            renderSuppressionManager();
+            renderEntries();
+        });
+        suppressionManagerBodyEl.appendChild(item);
+    }
 }
 
 function handleOutsideClick(e) {
@@ -688,10 +771,14 @@ const init = () => {
     loadPersistedHistory();
     registerSlashCommands();
 
-    // Keyboard shortcut: Escape closes panel
+    // Keyboard shortcut: Escape returns from the manager before closing the panel.
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && panelOpen) {
-            closePanel();
+            if (suppressionManagerEl && !suppressionManagerEl.hidden) {
+                closeSuppressionManager();
+            } else {
+                closePanel();
+            }
         }
     });
 };
