@@ -56,6 +56,7 @@ let panelFooterInfo = null;
 let suppressionManagerEl = null;
 let suppressionManagerBodyEl = null;
 let suppressionManagerOpen = false;
+let pulseToggleEl = null;
 
 // ─── Helpers ─────────────────────────────────────────────────
 function escapeHtml(str) {
@@ -170,6 +171,7 @@ function updateBadge() {
     if (!badgeEl || !badgeCountEl) return;
 
     const unreadCount = getUnreadCount();
+    badgeEl.classList.toggle('tt-badge--pulse-enabled', settings.enablePulse);
     if (unreadCount > 0) {
         badgeEl.classList.add('tt-badge--visible');
         badgeCountEl.textContent = formatBadgeCount(unreadCount);
@@ -186,6 +188,15 @@ function updateBadge() {
     } else {
         badgeCountEl.classList.remove('tt-badge-count--wide');
     }
+}
+
+function updatePulseToggle() {
+    if (!pulseToggleEl) return;
+    const enabled = settings.enablePulse !== false;
+    pulseToggleEl.classList.toggle('tt-pulse-toggle--off', !enabled);
+    pulseToggleEl.setAttribute('aria-pressed', String(enabled));
+    pulseToggleEl.textContent = enabled ? 'Pulse On' : 'Pulse Off';
+    pulseToggleEl.title = enabled ? 'Disable unread lantern pulse' : 'Enable unread lantern pulse';
 }
 
 // ─── Panel size persistence ───────────────────────────────────
@@ -304,6 +315,7 @@ function createPanel() {
         <div class="tt-footer">
             <span class="tt-footer-info"></span>
             <div class="tt-footer-btns">
+                <button class="tt-btn tt-pulse-toggle" data-action="toggle-pulse" type="button" aria-pressed="true" title="Disable unread lantern pulse">Pulse On</button>
                 <button class="tt-btn tt-btn--ghost" data-action="concealments" title="Review suppressed toast patterns">Conceal</button>
                 <button class="tt-btn tt-btn--ghost" data-action="export" title="Export toast history as text">Transcribe</button>
                 <button class="tt-btn tt-btn--danger" data-action="clear" title="Clear all toast history">Erase</button>
@@ -317,6 +329,7 @@ function createPanel() {
     panelFooterInfo = panelEl.querySelector('.tt-footer-info');
     suppressionManagerEl = panelEl.querySelector('.tt-suppression-manager');
     suppressionManagerBodyEl = panelEl.querySelector('.tt-suppression-manager-body');
+    pulseToggleEl = panelEl.querySelector('[data-action="toggle-pulse"]');
 
     // Search
     const searchInput = panelEl.querySelector('.tt-search-input');
@@ -337,6 +350,11 @@ function createPanel() {
 
     // Footer buttons
     panelEl.querySelector('.tt-popup-close').addEventListener('click', closePanel);
+    pulseToggleEl.addEventListener('click', () => {
+        settings.setPulseEnabled(!settings.enablePulse);
+        updateBadge();
+        updatePulseToggle();
+    });
     panelEl.querySelector('[data-action="concealments"]').addEventListener('click', () => {
         if (suppressionManagerOpen) {
             closeSuppressionManager();
@@ -375,6 +393,7 @@ function createPanel() {
     // Apply saved size (overrides CSS default), then attach resize handle
     applyPanelSize(panelEl);
     attachResizeHandle(panelEl);
+    updatePulseToggle();
 }
 
 function togglePanel() {

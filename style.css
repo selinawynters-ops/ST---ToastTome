@@ -58,6 +58,9 @@
     transform: scale(1.12);
     filter: drop-shadow(0 0 10px rgba(201, 164, 74, 0.5));
 }
+.tt-badge--pulse-enabled.tt-badge--active .tt-badge-icon {
+    animation: tt-badge-pulse 2s ease-in-out infinite;
+}
 
 /* Hanging notification count */
 .tt-badge-count {
@@ -92,6 +95,10 @@
     0% { transform: scale(0.5); opacity: 0; }
     60% { transform: scale(1.2); }
     100% { transform: scale(1); opacity: 1; }
+}
+@keyframes tt-badge-pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(201, 164, 74, 0)); }
+    50% { transform: scale(1.18); filter: drop-shadow(0 0 6px rgba(201, 164, 74, 0.7)); }
 }
 
 /* ================================================================
@@ -522,6 +529,25 @@
 .tt-btn--primary:hover {
     background: rgba(224, 196, 100, 0.28);
     color: #fff0a8;
+}
+.tt-pulse-toggle {
+    background: rgba(201, 164, 74, 0.16);
+    color: #f2d779;
+    border: 1px solid rgba(201, 164, 74, 0.36);
+    border-radius: 999px;
+}
+.tt-pulse-toggle:hover {
+    background: rgba(201, 164, 74, 0.26);
+    color: #fff0a8;
+}
+.tt-pulse-toggle--off {
+    background: rgba(196, 181, 253, 0.08);
+    color: #9f96bd;
+    border-color: rgba(196, 181, 253, 0.2);
+}
+.tt-pulse-toggle--off:hover {
+    background: rgba(196, 181, 253, 0.14);
+    color: #d8d0ef;
 }
 
 /* ─── Concealments manager ─────────────────────────── */

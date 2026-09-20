@@ -1,3 +1,4 @@
+# Toast Tome v1.0.3 Release Note
 # Toast Tome v1.0.4 Release Note
 
 ## Commit Summary
@@ -6,6 +7,7 @@ Add unread lantern pulse animation and suppression restore controls.
 
 ## Copy-Paste Description
 
+✨ Toast Tome v1.0.3 adds a slow unread lantern pulse so new toastr notifications are easier to notice without changing the resting icon.
 ✨ Toast Tome v1.0.4 adds a slow unread lantern pulse so new toastr notifications are easier to notice without changing the resting icon.
 
 When unread notifications are present, the lantern now:
