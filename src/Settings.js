@@ -12,6 +12,7 @@ const DEFAULTS = {
     captureSuccess: true,
     captureWarning: true,
     captureError: true,
+    enablePulse: true,
     unreadCount: 0,
 };
 
@@ -59,6 +60,7 @@ export class Settings {
         this.captureSuccess = saved.captureSuccess !== false;
         this.captureWarning = saved.captureWarning !== false;
         this.captureError = saved.captureError !== false;
+        this.enablePulse = saved.enablePulse !== false;
         this.unreadCount = toPositiveInteger(saved.unreadCount, DEFAULTS.unreadCount, 0, this.maxHistory);
         this.save();
     }
@@ -75,6 +77,7 @@ export class Settings {
             captureSuccess: this.captureSuccess,
             captureWarning: this.captureWarning,
             captureError: this.captureError,
+            enablePulse: this.enablePulse,
             unreadCount: this.unreadCount,
         };
         saveSettingsDebounced();
@@ -127,6 +130,11 @@ export class Settings {
     clearBlocks() {
         if (this.hideList.length === 0) return;
         this.hideList = [];
+        this.save();
+    }
+
+    setPulseEnabled(value) {
+        this.enablePulse = value !== false;
         this.save();
     }
 
