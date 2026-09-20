@@ -127,6 +127,16 @@ Works on any screen size:
 
 ## Recent Changes
 
+### 1.0.4 - 2026-09-20
+
+Added:
+- Added a slow unread lantern pulse animation for the Toast Tome badge.
+- Added a persistent **Pulse On** / **Pulse Off** footer pill so users can disable the animation if it conflicts with their SillyTavern fork.
+- Added mobile sizing support for the new pulse toggle.
+
+Changed:
+- The unread badge pulse now only runs when unread notifications exist and pulse animation is enabled.
+
 ### 1.0.3 — 2026-09-20
 
 Added:
