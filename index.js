@@ -318,7 +318,7 @@ function createPanel() {
             <div class="tt-footer-btns">
                 <button class="tt-pulse-toggle" data-action="toggle-pulse" type="button" aria-pressed="true" aria-label="Disable unread lantern pulse" title="Disable unread lantern pulse"><span aria-hidden="true">✓</span></button>
                 <button class="tt-btn tt-btn--ghost" data-action="concealments" title="Review suppressed toast patterns">Conceal</button>
-                <button class="tt-btn tt-btn--ghost" data-action="export" title="Export toast history as text">Transcribe</button>
+                <button class="tt-btn tt-btn--ghost" data-action="export" title="Export toast history as text">TransXP</button>
                 <button class="tt-btn tt-btn--danger" data-action="clear" title="Clear all toast history">Erase</button>
                 <button class="tt-btn tt-btn--primary" data-action="close" title="Close the Toast Tome">Seal</button>
             </div>
