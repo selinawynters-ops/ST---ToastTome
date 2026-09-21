@@ -201,63 +201,109 @@ function updatePulseToggle() {
 }
 
 // ─── Panel size persistence ───────────────────────────────────
-const TT_SIZE_KEY = 'tt_panel_size';
+const TT_PANEL_STATE_KEYS = {
+    desktop: 'tt_panel_state_desktop',
+    mobile: 'tt_panel_state_mobile',
+};
+const TT_MOBILE_QUERY = '(max-width: 600px)';
+const TT_PANEL_MARGIN = 8;
 
-function loadPanelSize() {
+function getPanelStateKey() {
+    return window.matchMedia(TT_MOBILE_QUERY).matches
+        ? TT_PANEL_STATE_KEYS.mobile
+        : TT_PANEL_STATE_KEYS.desktop;
+}
+
+function loadPanelState() {
     try {
-        const saved = localStorage.getItem(TT_SIZE_KEY);
+        const saved = localStorage.getItem(getPanelStateKey());
         if (saved) return JSON.parse(saved);
     } catch { /* ignore */ }
     return null;
 }
 
-function savePanelSize(height, width) {
+function clampNumber(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+}
+
+function getClampedPanelState(el, state = {}) {
+    const rect = el.getBoundingClientRect();
+    const maxW = Math.max(280, window.innerWidth - (TT_PANEL_MARGIN * 2));
+    const maxH = Math.max(200, window.innerHeight - (TT_PANEL_MARGIN * 2));
+    const width = clampNumber(Number(state.width) || rect.width || 420, Math.min(280, maxW), maxW);
+    const height = clampNumber(Number(state.height) || rect.height || 420, Math.min(200, maxH), maxH);
+    const maxLeft = Math.max(TT_PANEL_MARGIN, window.innerWidth - width - TT_PANEL_MARGIN);
+    const maxTop = Math.max(TT_PANEL_MARGIN, window.innerHeight - height - TT_PANEL_MARGIN);
+    const left = clampNumber(Number(state.left) || rect.left || maxLeft, TT_PANEL_MARGIN, maxLeft);
+    const top = clampNumber(Number(state.top) || rect.top || 56, TT_PANEL_MARGIN, maxTop);
+    return { top, left, width, height };
+}
+
+function applyPanelRect(el, state) {
+    const next = getClampedPanelState(el, state);
+    el.style.right = 'auto';
+    el.style.left = `${next.left}px`;
+    el.style.top = `${next.top}px`;
+    el.style.width = `${next.width}px`;
+    el.style.height = `${next.height}px`;
+    return next;
+}
+
+function savePanelState(el) {
     try {
-        localStorage.setItem(TT_SIZE_KEY, JSON.stringify({ height, width }));
+        localStorage.setItem(getPanelStateKey(), JSON.stringify(getClampedPanelState(el)));
     } catch { /* ignore */ }
 }
 
-function applyPanelSize(el) {
-    const saved = loadPanelSize();
+function applyPanelState(el) {
+    const saved = loadPanelState();
     if (!saved) return;
-    const maxH = window.innerHeight - 64;
-    const maxW = window.innerWidth - 24;
-    if (saved.height) el.style.height = Math.min(saved.height, maxH) + 'px';
-    if (saved.width)  el.style.width  = Math.min(saved.width,  maxW) + 'px';
+    applyPanelRect(el, saved);
+}
+
+function resetPanelState(el) {
+    try {
+        localStorage.removeItem(getPanelStateKey());
+    } catch { /* ignore */ }
+    el.style.removeProperty('top');
+    el.style.removeProperty('right');
+    el.style.removeProperty('left');
+    el.style.removeProperty('width');
+    el.style.removeProperty('height');
 }
 
 function attachResizeHandle(el) {
     const handle = el.querySelector('.tt-resize-handle');
     if (!handle) return;
 
-    let startY, startX, startH, startW;
+    let startY, startX, startH, startW, startTop, startLeft;
 
     function onMove(e) {
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const maxH = window.innerHeight - 64;
-        const maxW = window.innerWidth - 24;
-        const newH = Math.min(maxH, Math.max(200, startH + (clientY - startY)));
-        const newW = Math.min(maxW, Math.max(280, startW - (clientX - startX)));
-        el.style.height = newH + 'px';
-        el.style.width  = newW + 'px';
+        applyPanelRect(el, {
+            top: startTop,
+            left: startLeft,
+            width: startW + (clientX - startX),
+            height: startH + (clientY - startY),
+        });
     }
 
-    function onEnd(e) {
+    function onEnd() {
         handle.classList.remove('tt-resizing');
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onEnd);
         document.removeEventListener('touchmove', onMove);
         document.removeEventListener('touchend', onEnd);
-        const h = parseInt(el.style.height);
-        const w = parseInt(el.style.width);
-        if (!isNaN(h) && !isNaN(w)) savePanelSize(h, w);
+        savePanelState(el);
     }
 
     handle.addEventListener('mousedown', (e) => {
         e.preventDefault();
+        const rect = el.getBoundingClientRect();
         startY = e.clientY; startX = e.clientX;
-        startH = el.offsetHeight; startW = el.offsetWidth;
+        startH = rect.height; startW = rect.width;
+        startTop = rect.top; startLeft = rect.left;
         handle.classList.add('tt-resizing');
         document.addEventListener('mousemove', onMove);
         document.addEventListener('mouseup', onEnd);
@@ -265,12 +311,65 @@ function attachResizeHandle(el) {
 
     handle.addEventListener('touchstart', (e) => {
         e.preventDefault();
+        const rect = el.getBoundingClientRect();
         startY = e.touches[0].clientY; startX = e.touches[0].clientX;
-        startH = el.offsetHeight; startW = el.offsetWidth;
+        startH = rect.height; startW = rect.width;
+        startTop = rect.top; startLeft = rect.left;
         handle.classList.add('tt-resizing');
         document.addEventListener('touchmove', onMove, { passive: false });
         document.addEventListener('touchend', onEnd);
     }, { passive: false });
+}
+
+function attachPanelDrag(el) {
+    const titlebar = el.querySelector('.tt-titlebar');
+    if (!titlebar) return;
+
+    let startY, startX, startTop, startLeft;
+
+    function onMove(e) {
+        e.preventDefault();
+        const point = e.touches ? e.touches[0] : e;
+        const rect = el.getBoundingClientRect();
+        applyPanelRect(el, {
+            top: startTop + (point.clientY - startY),
+            left: startLeft + (point.clientX - startX),
+            width: rect.width,
+            height: rect.height,
+        });
+    }
+
+    function onEnd() {
+        titlebar.classList.remove('tt-titlebar--dragging');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+        savePanelState(el);
+    }
+
+    function onStart(e) {
+        if (e.target.closest('button, input, textarea, select, a')) return;
+        e.preventDefault();
+        const point = e.touches ? e.touches[0] : e;
+        const rect = el.getBoundingClientRect();
+        startY = point.clientY;
+        startX = point.clientX;
+        startTop = rect.top;
+        startLeft = rect.left;
+        titlebar.classList.add('tt-titlebar--dragging');
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd);
+    }
+
+    titlebar.addEventListener('mousedown', onStart);
+    titlebar.addEventListener('touchstart', onStart, { passive: false });
+    titlebar.addEventListener('dblclick', (e) => {
+        if (e.target.closest('button, input, textarea, select, a')) return;
+        resetPanelState(el);
+    });
 }
 
 // ─── Panel ───────────────────────────────────────────────────
@@ -282,6 +381,7 @@ function createPanel() {
     panelEl.innerHTML = `
         <div class="tt-panel-glow-top"></div>
         <div class="tt-titlebar">
+            <button class="tt-panel-reset" type="button" title="Reset Toast Tome panel position" aria-label="Reset Toast Tome panel position">⚙</button>
             <span class="tt-ornament">◆───</span>
             <span class="tt-title-icon">🏮</span>
             <span class="tt-title-text">Toast Tome</span>
@@ -351,6 +451,10 @@ function createPanel() {
 
     // Footer buttons
     panelEl.querySelector('.tt-popup-close').addEventListener('click', closePanel);
+    panelEl.querySelector('.tt-panel-reset').addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetPanelState(panelEl);
+    });
     pulseToggleEl.addEventListener('click', () => {
         settings.setPulseEnabled(!settings.enablePulse);
         updateBadge();
@@ -391,8 +495,9 @@ function createPanel() {
 
     document.body.appendChild(panelEl);
 
-    // Apply saved size (overrides CSS default), then attach resize handle
-    applyPanelSize(panelEl);
+    // Apply saved panel state (overrides CSS default), then attach movement handles
+    applyPanelState(panelEl);
+    attachPanelDrag(panelEl);
     attachResizeHandle(panelEl);
     updatePulseToggle();
 }

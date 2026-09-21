@@ -173,6 +173,38 @@
     position: relative;
     gap: 10px;
     flex-shrink: 0;
+    cursor: move;
+    user-select: none;
+    touch-action: none;
+}
+.tt-titlebar--dragging {
+    cursor: move;
+}
+.tt-panel-reset {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(224, 196, 100, 0.24);
+    background: rgba(224, 196, 100, 0.1);
+    color: rgba(242, 215, 121, 0.82);
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: calc(var(--mainFontSize) * 0.8);
+    line-height: 1;
+    transition: all 0.16s ease;
+    z-index: 2;
+}
+.tt-panel-reset:hover {
+    background: rgba(224, 196, 100, 0.18);
+    border-color: rgba(224, 196, 100, 0.42);
+    color: #fff0a8;
 }
 .tt-ornament {
     color: rgba(224, 196, 100, 0.5);

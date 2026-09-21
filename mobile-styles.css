@@ -62,7 +62,7 @@
         left: 8px;
         width: auto;
         max-width: none;
-        height: auto !important;
+        height: auto;
         max-height: calc(100dvh - 88px);
         min-width: 0;
         min-height: min(520px, calc(65dvh));
@@ -77,6 +77,11 @@
     .tt-titlebar {
         padding: 12px 16px;
         gap: 6px;
+    }
+    .tt-panel-reset {
+        left: 10px;
+        width: 24px;
+        height: 24px;
     }
     .tt-ornament {
         display: none;
@@ -256,6 +261,11 @@
     }
     .tt-titlebar {
         padding: 10px 12px;
+    }
+    .tt-panel-reset {
+        left: 8px;
+        width: 22px;
+        height: 22px;
     }
     .tt-title-text {
         font-size: 14px;
